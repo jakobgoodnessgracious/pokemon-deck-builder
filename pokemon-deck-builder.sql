@@ -16,9 +16,11 @@ CREATE TABLE "player" (
   "nickname" varchar(255)
 );
 
+CREATE UNIQUE INDEX player_username_case_insensitive_idx ON player (LOWER(username));
+
 CREATE TABLE "deck" (
   "id" SERIAL PRIMARY KEY,
-  "player_username" varchar(255) NOT NULL REFERENCES player(username),
+  "player_username" varchar(255) NOT NULL REFERENCES player(username) ON UPDATE CASCADE ON DELETE CASCADE,
   "title" varchar(255) NOT NULL,
   "is_favorite" boolean NOT NULL DEFAULT false,
   "is_active" boolean NOT NULL DEFAULT false,
@@ -37,24 +39,24 @@ CREATE TABLE "card" (
 );
 
 CREATE TABLE "decks_cards" (
-  "deck_id" integer REFERENCES deck(id),
-  "card_id" varchar(255) REFERENCES card(id),
+  "deck_id" integer REFERENCES deck(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  "card_id" varchar(255) REFERENCES card(id) ON UPDATE CASCADE ON DELETE CASCADE,
   "is_card_pokemon" boolean NOT NULL DEFAULT false,
   "count" integer CHECK ((is_card_pokemon = true AND count BETWEEN 0 AND 5) OR (is_card_pokemon = false)) NOT NULL DEFAULT 1,
   PRIMARY KEY ("deck_id", "card_id")
 );
 
 CREATE TABLE "card_attributes" (
-  "card_id" varchar(255) REFERENCES card(id),
+  "card_id" varchar(255) REFERENCES card(id) ON UPDATE CASCADE ON DELETE CASCADE,
   "attribute" card_attribute,
   "value" varchar(255),
   "data_type" js_data_type,
   PRIMARY KEY ("card_id", "attribute", "value")
 );
 
-CREATE TABLE "collection" (
-  "player_username" varchar(255) NOT NULL REFERENCES player(username),
-  "card_id" varchar(255) NOT NULL REFERENCES card(id)
+CREATE TABLE "player_cards" (
+  "player_username" varchar(255) NOT NULL REFERENCES player(username) ON UPDATE CASCADE ON DELETE CASCADE,
+  "card_id" varchar(255) NOT NULL REFERENCES card(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 
@@ -63,11 +65,12 @@ COMMENT ON COLUMN "card"."rarity" IS 'Promo, Rare, Rare Ultra, Uncommon, etc.';
 COMMENT ON COLUMN "decks_cards"."count" IS 'if is_pokemon ensure no more than 4 are inserted';
 COMMENT ON COLUMN "card_attributes"."attribute" IS 'E.G. Type,Subtype, etc.';
 COMMENT ON COLUMN "card_attributes"."value" IS 'E.G. Water, Fire, Lightning, or Basic, V, V-MAX, etc., and more...';
+COMMENT ON TABLE player_cards IS 'Essentially this is the (card) collection table'
 
 -- reset
 DROP TABLE decks_cards;
 DROP TABLE deck;
-DROP TABLE collection;
+DROP TABLE player_cards;
 DROP TABLE player;
 DROP TABLE card_attributes;
 DROP TABLE card;
@@ -87,7 +90,7 @@ INSERT INTO card (id, supertype, rarity, image_small_url)
 	VALUES ('gym2-2', 'Pokémon', 'Rare Holo', 'https://images.pokemontcg.io/gym2/2.png');
 INSERT INTO card_attributes (card_id, attribute, value, data_type)
 	VALUES 	('gym2-2', 'type', 'Fire', 'string'), ('gym2-2', 'subtype', 'Stage 2',  'string');
-INSERT INTO collection (player_username, card_id)
+INSERT INTO player_cards (player_username, card_id)
 	VALUES ('gooserjg@hotmail.com','gym2-2');
 INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
   VALUES (1, 'gym2-2', true);
@@ -97,7 +100,7 @@ INSERT INTO card (id, supertype, rarity, image_small_url)
 	VALUES ('bw10-14', 'Pokémon', 'Common', 'https://images.pokemontcg.io/bw10/14.png');
 INSERT INTO card_attributes (card_id, attribute, value, data_type)
  	VALUES ('bw10-14', 'type', 'Water', 'string'), ('bw10-14', 'subtype', 'Basic', 'string');
-INSERT INTO collection (player_username, card_id)
+INSERT INTO player_cards (player_username, card_id)
 	VALUES ('gooserjg@hotmail.com','bw10-14');
 INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
   VALUES (1, 'bw10-14', true);
@@ -107,12 +110,40 @@ INSERT INTO card (id, supertype, rarity, image_small_url)
 	VALUES ('swsh35-53', 'Trainer', 'Uncommon', 'https://images.pokemontcg.io/swsh35/53.png');
 INSERT INTO card_attributes (card_id, attribute, value, data_type)
 	VALUES ('swsh35-53', 'subtype', 'Supporter', 'string');
-INSERT INTO collection (player_username, card_id)
+INSERT INTO player_cards (player_username, card_id)
 	VALUES ('gooserjg@hotmail.com','swsh35-53');
 INSERT INTO decks_cards (deck_id, card_id)
   VALUES (1, 'swsh35-53');
-
-
+  
+-- radiant blastoise
+INSERT INTO card (id, supertype, rarity, image_small_url)
+	VALUES ('pgo-18', 'Pokémon', 'Radiant Rare', 'https://images.pokemontcg.io/pgo/18.png');
+INSERT INTO card_attributes (card_id, attribute, value, data_type)
+	VALUES ('pgo-18', 'type', 'Water', 'string'), ('pgo-18', 'subtype', 'Basic', 'string'), ('pgo-18', 'subtype', 'Radiant', 'string');
+INSERT INTO player_cards (player_username, card_id)
+	VALUES ('gooserjg@hotmail.com', 'pgo-18');
+INSERT INTO decks_cards (deck_id, card_id)
+	VALUES (1, 'pgo-18');
+	
+-- dragonite
+INSERT INTO card (id, supertype, rarity, image_small_url)
+	VALUES ('pgo-49', 'Pokémon', 'Rare Holo V', 'https://images.pokemontcg.io/pgo/49.png');
+INSERT INTO card_attributes (card_id, attribute, value, data_type)
+	VALUES ('pgo-49', 'type', 'Dragon', 'string'), ('pgo-49', 'subtype', 'Basic', 'string'), ('pgo-49', 'subtype', 'V', 'string');
+INSERT INTO player_cards (player_username, card_id)
+	VALUES ('gooserjg@hotmail.com', 'pgo-49');
+INSERT INTO decks_cards (deck_id, card_id)
+	VALUES (1, 'pgo-49');
+	
+-- mewtwo
+INSERT INTO card (id, supertype, rarity, image_small_url)
+	VALUES ('swshp-SWSH223', 'Pokémon', 'Promo', 'https://images.pokemontcg.io/swshp/SWSH223.png');
+INSERT INTO card_attributes (card_id, attribute, value, data_type)
+	VALUES ('swshp-SWSH223', 'type', 'Psychic', 'string'), ('swshp-SWSH223', 'subtype', 'Basic', 'string'), ('swshp-SWSH223', 'subtype', 'V', 'string');
+INSERT INTO player_cards (player_username, card_id)
+	VALUES ('gooserjg@hotmail.com', 'swshp-SWSH223');
+INSERT INTO decks_cards (deck_id, card_id)
+	VALUES (1, 'swshp-SWSH223');
 
 -- apis
 -- just a random get all cards query prob remove idk
@@ -148,9 +179,9 @@ WHERE dc.deck_id = 1;
 -- delete deck cards
 -- insert deck cards
 
--- get all cards in collection
+-- get all cards in player_cards
 SELECT c.*
-FROM collection co
+FROM player_cards co
 JOIN card c
 	ON co.card_id = c.id
 WHERE co.player_username = 'gooserjg@hotmail.com'
@@ -169,11 +200,11 @@ JOIN card c
 	ON c.id = a.card_id
 WHERE a.attribute = 'type' AND value = 'Water' AND d.player_username = 'gooserjg@hotmail.com';
 
--- get collection cards by attribute [type]
+-- get player cards by attribute [type]
 --SELECT c.image_small_url
 SELECT *
 FROM card_attributes a
-JOIN collection co
+JOIN player_cards co
 	ON a.card_id = co.card_id
 JOIN card c
 	ON c.id = a.card_id
