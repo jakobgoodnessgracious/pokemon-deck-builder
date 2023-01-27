@@ -4,6 +4,8 @@ import utilStyles from '../styles/utils.module.css';
 import { getSortedPostsData } from '../lib/posts';
 import Link from 'next/link';
 import Date from '../components/date';
+import useSWR from 'swr'
+import Image from 'next/image';
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
@@ -15,25 +17,46 @@ export async function getStaticProps() {
 }
 
 export default function Home({ allPostsData }) {
-  return (
-    <Layout home>
-      {/* Keep the existing code here */}
+  const fetcher = (...args) => fetch(...args).then(res => res.json())
 
-      {/* Add this <section> tag below the existing <section> tag */}
-      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
-        <h2 className={utilStyles.headingLg}>Blog</h2>
-        <ul className={utilStyles.list}>
-          {allPostsData.map(({ id, date, title }) => (
-            <li className={utilStyles.listItem} key={id}>
-              <Link href={`/posts/${id}`}>{title}</Link>
-              <br />
-              <small className={utilStyles.lightText}>
-                <Date dateString={date} />
-              </small>
-            </li>
-          ))}
-        </ul>
-      </section>
+  const { data, error, isLoading } = useSWR('/api/card', fetcher)
+
+  // if (error) return <div>failed to load</div>
+  // if (isLoading) return <div>loading...</div>
+  return (
+    // <Layout home>
+    //   {/* Keep the existing code here */}
+
+    //   {/* Add this <section> tag below the existing <section> tag */}
+    //   <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+    //     <h2 className={utilStyles.headingLg}>Blog</h2>
+    //     <ul className={utilStyles.list}>
+    //       {allPostsData.map(({ id, date, title }) => (
+    //         <li className={utilStyles.listItem} key={id}>
+    //           <Link href={`/posts/${id}`}>{title}</Link>
+    //           <br />
+    //           <small className={utilStyles.lightText}>
+    //             <Date dateString={date} />
+    //           </small>
+    //         </li>
+    //       ))}
+    //     </ul>
+    //   </section>
+    // </Layout>
+    <Layout home>
+      {error && <div>failed to load</div>}
+      {isLoading && <div>loading...</div>}
+      {!error && !isLoading && data.map(({ image_small_url, id }) => {
+        return <Image
+          key={id}
+          priority
+          src={image_small_url}
+          className={utilStyles.cardBorderRadius}
+          height={342}
+          width={245}
+          alt=""
+        />
+      })}
     </Layout>
   );
 }

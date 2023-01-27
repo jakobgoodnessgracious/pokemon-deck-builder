@@ -4,7 +4,7 @@ const withLogging = require('../utils/withLogging');
 
 const handler = async (req, res) => {
     const { rows: result } = await db.query('SELECT * FROM card', '');
-    res.send(result);
+    res.status(201).send(result);
 }
 
 export default withLogging(handler);

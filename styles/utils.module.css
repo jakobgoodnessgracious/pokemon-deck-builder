@@ -28,6 +28,10 @@
   .borderCircle {
     border-radius: 9999px;
   }
+
+  .cardBorderRadius {
+    border-radius: 7px;
+  }
   
   .colorInherit {
     color: inherit;
