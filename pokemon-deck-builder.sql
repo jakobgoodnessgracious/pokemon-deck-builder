@@ -10,17 +10,16 @@ CREATE TYPE "js_data_type" AS ENUM (
 );
 
 CREATE TABLE "player" (
-  "username" varchar(255) PRIMARY KEY,
-  "name_first" varchar(255),
-  "name_last" varchar(255),
-  "nickname" varchar(255)
+  "email" varchar(255) PRIMARY KEY,
+  "username" varchar(255) NOT NULL
 );
 
+CREATE UNIQUE INDEX player_email_case_insensitive_idx ON player (LOWER(email));
 CREATE UNIQUE INDEX player_username_case_insensitive_idx ON player (LOWER(username));
 
 CREATE TABLE "deck" (
   "id" SERIAL PRIMARY KEY,
-  "player_username" varchar(255) NOT NULL REFERENCES player(username) ON UPDATE CASCADE ON DELETE CASCADE,
+  "player_email" varchar(255) NOT NULL REFERENCES player(email) ON UPDATE CASCADE ON DELETE CASCADE,
   "title" varchar(255) NOT NULL,
   "is_favorite" boolean NOT NULL DEFAULT false,
   "is_active" boolean NOT NULL DEFAULT false,
@@ -32,6 +31,7 @@ CREATE TABLE "deck" (
 
 CREATE TABLE "card" (
   "id" varchar(255) PRIMARY KEY,
+  "name" varchar(255) NOT NULL,
   "supertype" varchar(255) NOT NULL,
   "rarity" varchar(255) NOT NULL,
   "image_small_url" varchar(255),
@@ -55,7 +55,7 @@ CREATE TABLE "card_attributes" (
 );
 
 CREATE TABLE "player_cards" (
-  "player_username" varchar(255) NOT NULL REFERENCES player(username) ON UPDATE CASCADE ON DELETE CASCADE,
+  "player_email" varchar(255) NOT NULL REFERENCES player(email) ON UPDATE CASCADE ON DELETE CASCADE,
   "card_id" varchar(255) NOT NULL REFERENCES card(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -81,69 +81,69 @@ DROP TYPE js_data_type;
 
 
 -----data
-INSERT INTO player (name_first, name_last, nickname, username)
-	VALUES ('Jakob', 'Giese', 'the pokenator', 'gooserjg@hotmail.com');
-INSERT INTO deck (title, player_username)
+INSERT INTO player (username, email)
+	VALUES ('goosemondude', 'gooserjg@hotmail.com');
+INSERT INTO deck (title, player_email)
 	VALUES ('My First Deck', 'gooserjg@hotmail.com');
 -- charizard
-INSERT INTO card (id, supertype, rarity, image_small_url)
-	VALUES ('gym2-2', 'Pokémon', 'Rare Holo', 'https://images.pokemontcg.io/gym2/2.png');
+INSERT INTO card (id, name, supertype, rarity, image_small_url)
+	VALUES ('pgo-10', 'Charizard', 'Pokémon', 'Rare Holo', 'https://images.pokemontcg.io/pgo/10.png');
 INSERT INTO card_attributes (card_id, attribute, value, data_type)
-	VALUES 	('gym2-2', 'type', 'Fire', 'string'), ('gym2-2', 'subtype', 'Stage 2',  'string');
-INSERT INTO player_cards (player_username, card_id)
-	VALUES ('gooserjg@hotmail.com','gym2-2');
+	VALUES ('pgo-10', 'type', 'Fire', 'string'), ('pgo-10', 'subtype', 'Stage 2', 'string');
+INSERT INTO player_cards (player_email, card_id)
+	VALUES ('gooserjg@hotmail.com', 'pgo-10');
 INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
-  VALUES (1, 'gym2-2', true);
+	VALUES (1, 'pgo-10', true);
 
 -- squirtle
-INSERT INTO card (id, supertype, rarity, image_small_url) 
-	VALUES ('bw10-14', 'Pokémon', 'Common', 'https://images.pokemontcg.io/bw10/14.png');
+INSERT INTO card (id, name, supertype, rarity, image_small_url)
+	VALUES ('pgo-15', 'Squirtle', 'Pokémon', 'Common', 'https://images.pokemontcg.io/pgo/15.png');
 INSERT INTO card_attributes (card_id, attribute, value, data_type)
- 	VALUES ('bw10-14', 'type', 'Water', 'string'), ('bw10-14', 'subtype', 'Basic', 'string');
-INSERT INTO player_cards (player_username, card_id)
-	VALUES ('gooserjg@hotmail.com','bw10-14');
+	VALUES ('pgo-15', 'type', 'Water', 'string'), ('pgo-15', 'subtype', 'Basic', 'string');
+INSERT INTO player_cards (player_email, card_id)
+	VALUES ('gooserjg@hotmail.com', 'pgo-15');
 INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
-  VALUES (1, 'bw10-14', true);
+	VALUES (1, 'pgo-15', true);
 
 -- hop
-INSERT INTO card (id, supertype, rarity, image_small_url)
-	VALUES ('swsh35-53', 'Trainer', 'Uncommon', 'https://images.pokemontcg.io/swsh35/53.png');
+INSERT INTO card (id, name, supertype, rarity, image_small_url)
+	VALUES ('swsh1-165', 'Hop', 'Trainer', 'Uncommon', 'https://images.pokemontcg.io/swsh1/165.png');
 INSERT INTO card_attributes (card_id, attribute, value, data_type)
-	VALUES ('swsh35-53', 'subtype', 'Supporter', 'string');
-INSERT INTO player_cards (player_username, card_id)
-	VALUES ('gooserjg@hotmail.com','swsh35-53');
-INSERT INTO decks_cards (deck_id, card_id)
-  VALUES (1, 'swsh35-53');
+	VALUES ('swsh1-165', 'subtype', 'Supporter', 'string');
+INSERT INTO player_cards (player_email, card_id)
+	VALUES ('gooserjg@hotmail.com', 'swsh1-165');
+INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
+	VALUES (1, 'swsh1-165', true);
   
 -- radiant blastoise
-INSERT INTO card (id, supertype, rarity, image_small_url)
-	VALUES ('pgo-18', 'Pokémon', 'Radiant Rare', 'https://images.pokemontcg.io/pgo/18.png');
+INSERT INTO card (id, name, supertype, rarity, image_small_url)
+	VALUES ('pgo-18', 'Radiant Blastoise', 'Pokémon', 'Radiant Rare', 'https://images.pokemontcg.io/pgo/18.png');
 INSERT INTO card_attributes (card_id, attribute, value, data_type)
 	VALUES ('pgo-18', 'type', 'Water', 'string'), ('pgo-18', 'subtype', 'Basic', 'string'), ('pgo-18', 'subtype', 'Radiant', 'string');
-INSERT INTO player_cards (player_username, card_id)
+INSERT INTO player_cards (player_email, card_id)
 	VALUES ('gooserjg@hotmail.com', 'pgo-18');
-INSERT INTO decks_cards (deck_id, card_id)
-	VALUES (1, 'pgo-18');
+INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
+	VALUES (1, 'pgo-18', true);
 	
 -- dragonite
-INSERT INTO card (id, supertype, rarity, image_small_url)
-	VALUES ('pgo-49', 'Pokémon', 'Rare Holo V', 'https://images.pokemontcg.io/pgo/49.png');
+INSERT INTO card (id, name, supertype, rarity, image_small_url)
+	VALUES ('pgo-49', 'Dragonite V', 'Pokémon', 'Rare Holo V', 'https://images.pokemontcg.io/pgo/49.png');
 INSERT INTO card_attributes (card_id, attribute, value, data_type)
 	VALUES ('pgo-49', 'type', 'Dragon', 'string'), ('pgo-49', 'subtype', 'Basic', 'string'), ('pgo-49', 'subtype', 'V', 'string');
-INSERT INTO player_cards (player_username, card_id)
+INSERT INTO player_cards (player_email, card_id)
 	VALUES ('gooserjg@hotmail.com', 'pgo-49');
-INSERT INTO decks_cards (deck_id, card_id)
-	VALUES (1, 'pgo-49');
+INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
+	VALUES (1, 'pgo-49', true);
 	
 -- mewtwo
-INSERT INTO card (id, supertype, rarity, image_small_url)
-	VALUES ('swshp-SWSH223', 'Pokémon', 'Promo', 'https://images.pokemontcg.io/swshp/SWSH223.png');
+INSERT INTO card (id, name, supertype, rarity, image_small_url)
+	VALUES ('swshp-SWSH223', 'Mewtwo V', 'Pokémon', 'Promo', 'https://images.pokemontcg.io/swshp/SWSH223.png');
 INSERT INTO card_attributes (card_id, attribute, value, data_type)
 	VALUES ('swshp-SWSH223', 'type', 'Psychic', 'string'), ('swshp-SWSH223', 'subtype', 'Basic', 'string'), ('swshp-SWSH223', 'subtype', 'V', 'string');
-INSERT INTO player_cards (player_username, card_id)
+INSERT INTO player_cards (player_email, card_id)
 	VALUES ('gooserjg@hotmail.com', 'swshp-SWSH223');
-INSERT INTO decks_cards (deck_id, card_id)
-	VALUES (1, 'swshp-SWSH223');
+INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
+	VALUES (1, 'swshp-SWSH223', true);
 
 -- apis
 -- just a random get all cards query prob remove idk
@@ -155,7 +155,7 @@ JOIN card_attributes ca
 -- get user info
 SELECT *
 FROM player p
-WHERE username = 'gooserjg@hotmail.com';
+WHERE email = 'gooserjg@hotmail.com';
 -- post user info
 -- create user info
 -- delete user info
@@ -163,7 +163,7 @@ WHERE username = 'gooserjg@hotmail.com';
 -- get user decks
 SELECT * 
 FROM deck
-WHERE player_username = 'gooserjg@hotmail.com';
+WHERE player_email = 'gooserjg@hotmail.com';
 -- update user decks
 -- delete user decks
 -- insert user decks
@@ -184,7 +184,7 @@ SELECT c.*
 FROM player_cards co
 JOIN card c
 	ON co.card_id = c.id
-WHERE co.player_username = 'gooserjg@hotmail.com'
+WHERE co.player_email = 'gooserjg@hotmail.com'
 
 -- get deck cards by attribute [type]
 --SELECT c.image_small_url
@@ -198,7 +198,7 @@ JOIN deck d
 	ON dc.deck_id = d.id
 JOIN card c
 	ON c.id = a.card_id
-WHERE a.attribute = 'type' AND value = 'Water' AND d.player_username = 'gooserjg@hotmail.com';
+WHERE a.attribute = 'type' AND value = 'Water' AND d.player_email = 'gooserjg@hotmail.com';
 
 -- get player cards by attribute [type]
 --SELECT c.image_small_url
@@ -208,7 +208,7 @@ JOIN player_cards co
 	ON a.card_id = co.card_id
 JOIN card c
 	ON c.id = a.card_id
-WHERE a.attribute = 'type' AND a.value = 'Water' AND co.player_username = 'gooserjg@hotmail.com';
+WHERE a.attribute = 'type' AND a.value = 'Water' AND co.player_email = 'gooserjg@hotmail.com';
 
 
 -- app flow

@@ -46,17 +46,28 @@ export default function Home({ allPostsData }) {
     <Layout home>
       {error && <div>failed to load</div>}
       {isLoading && <div>loading...</div>}
-      {!error && !isLoading && data.map(({ image_small_url, id }) => {
-        return <Image
-          key={id}
-          priority
-          src={image_small_url}
-          className={utilStyles.cardBorderRadius}
-          height={342}
-          width={245}
-          alt=""
-        />
-      })}
-    </Layout>
+      {!error && !isLoading &&
+        <div style={{ display: 'flex' }}> {data.map(({ image_small_url, id }) => {
+          return <Image
+            key={id}
+            priority
+            src={image_small_url}
+            className={utilStyles.cardBorderRadius}
+            // height={171} // original
+            // width={122.5} // original
+            height={205.2} // 40 %
+            width={147} // 40 %
+            // height={239.4} // 30%
+            // width={171.5} // 30%
+            placeholder="blur"
+            blurDataURL={image_small_url}
+            alt=""
+          />
+        })}
+        </div>
+      }
+
+
+    </Layout >
   );
 }
