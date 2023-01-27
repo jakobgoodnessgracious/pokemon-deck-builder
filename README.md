@@ -1,1 +1,1 @@
-# pokemon-tcg-deck-builder
+# pokemon-deck-builder
