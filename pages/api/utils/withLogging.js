@@ -1,65 +1,113 @@
-const { Console } = console;
-const { parseISO, format } = require('date-fns');
-const DATE_FORMAT = 'LL-dd-yyyy H:m:ss.SS';
-const FILE_DATE_FORMAT = 'LL-dd-yyyy';
-const LOG_DIR = process.env.LOG_DIR || './logs';
-const NODE_ENV = process.env.NODE_ENV;
-
-const LOG_DIRECTION = process.env.LOG_DIRECTION || process.env.NODE_ENV === 'production' ? 'horizontal' : 'vertical';
-const LOG_LEVEL = process.env.LOG_LEVEL || NODE_ENV === 'production' ? 'error' : 'debug';
 var fs = require('fs');
 var util = require('util');
+const { parseISO, format } = require('date-fns');
+const DATE_FORMAT = 'LL-dd-yyyy H:m:ss.SS';
+const NODE_ENV = process.env.NODE_ENV;
 
-const formatLog = (req, res, result) => {
-    return `${format(Date.now(), DATE_FORMAT)} debug: ${req.url} ${res.statusCode} ${JSON.stringify(result, '', LOG_DIRECTION === 'horizontal' ? '' : 2)}`;
-}
+// move this and dependencies to its own module.
+// then export as logger from sharedLogger out of a different file;
+class Logger {
+    constructor(opts) {
+        const { toFile, logDir, logLevel, fileDateFormat } = opts || {};
+        this._toFile = !!toFile || !!logDir;
+        this._logDir = logDir || './logs';
+        this._fileDateFormat = fileDateFormat || 'LL-dd-yyy';
+        this._level = logLevel || process.env.NODE_ENV === 'production' ? 'error' : 'debug';
+        // set allowed log func levels  
+        this._allowedLogFuncLevels = ['debug', 'info', 'warn', 'error'].reduce((accumulator, currentValue, index, array) => {
+            if (array.indexOf(this._level) >= index) {
+                accumulator.push(currentValue);
+            }
+            return accumulator;
+        }, [])
 
-if (!fs.existsSync(LOG_DIR)) {
-    if (!LOG_DIR.startsWith('/') && !LOG_DIR.inculdes('..')) {
-        fs.mkdirSync(LOG_DIR);
-        console.log('Created Dir', LOG_DIR);
-    } else {
-        console.error(`LOG_DIR=${LOG_DIR} is not a safe path. Exiting...`);
-        process.exit();
+        this._logFileStream = fs.createWriteStream(this._getCurrentLogPath(), { flags: 'a' });
+        this._makeLogDir();
+    }
+
+    _formatLog(logLevel) {
+        return `${format(Date.now(), DATE_FORMAT)} ${logLevel}:`;
+    }
+
+    _getCurrentLogPath = () => {
+        return this._logDir + '/' + format(Date.now(), this._fileDateFormat) + '.log';
+    }
+
+    _guardLevel(logFuncLevel) {
+        return this._allowedLogFuncLevels.includes(logFuncLevel);
+    }
+
+    _makeLogDir() {
+        if (!this._logDir.startsWith('/') && !this._logDir.includes('..')) {
+            if (!fs.existsSync(this._logDir)) {
+                fs.mkdirSync(this._logDir);
+                this.log('Created Dir', this._logDir);
+            } else {
+                this.log('Directory', this._logDir, 'already exists, not creating a new one.');
+            }
+
+        } else {
+            this.error(`LOG_DIR=${this._logDir} is not a safe path. Exiting...`);
+            process.exit();
+        }
+    }
+
+    _writeToFile(text) {
+        this._logFileStream.path = this._getCurrentLogPath();
+        this._logFileStream.write(text);
+    }
+
+    _handleLog(level, ...textAsParams) {
+        if (!this._guardLevel(level)) return;
+        const toWrite = `${this._formatLog(level)} ${textAsParams.join(' ')}\n`;
+        process.stdout.write(toWrite);
+        if (this._toFile) {
+            this._writeToFile(toWrite);
+        }
+
+    }
+
+    log(...textAsParams) {
+        this._handleLog('debug', ...textAsParams);
+    }
+
+    info(...textAsParams) {
+        this._handleLog('info', ...textAsParams);
+    }
+
+    warn(...textAsParams) {
+        this._handleLog('warn', ...textAsParams);
+    }
+
+    error(...textAsParams) {
+        this._handleLog('error', ...textAsParams);
     }
 }
 
-// nodejs doc version
-const output = fs.createWriteStream('./stdout.log');
-const errorOutput = fs.createWriteStream('./stderr.log');
-// custom simple logger
-output.path = './stdout.log';
-const loggers = new Console({ colorMode: 'auto', stdout: output, stderr: errorOutput });
 
-// // use it like console
-// const count = 5;
-// logger.log('count: %d', count);
-// // in stdout.log: count 5
-const getCurrentLogPath = () => {
-    return LOG_DIR + '/' + format(Date.now(), FILE_DATE_FORMAT) + '.log';
-}
-const logFile = fs.createWriteStream(getCurrentLogPath(), { flags: 'a' });
-const writeLog = (...p) => {
-    logFile.path = getCurrentLogPath();
-    logFile.write(util.format(...p) + '\n');
+const LOG_DIRECTION = process.env.LOG_DIRECTION || NODE_ENV === 'production' ? 'horizontal' : 'vertical';
+const LOG_LEVEL = process.env.LOG_LEVEL;
+const logger = new Logger({ toFile: true, logLevel: LOG_LEVEL });
+
+const formatLog = (req, res, result) => {
+    return `${req.url} ${res.statusCode} ${JSON.stringify(result, '', LOG_DIRECTION === 'horizontal' ? '' : 2)}`;
 }
 
-console.writeLog = (...p) => {
-    console.time('writeLog');
-    writeLog(...p);
-    console.timeEnd('writeLog');
-}
+
+// console.time('writeLog');
+// console.timeEnd('writeLog');
+
 const withLogging = (handler) => {
     return async (req, res) => {
         const temp = res.send;
         res.send = (result) => {
-            console.log(formatLog(req, res, result));
-            console.writeLog(formatLog(req, res, result));
+            console.time('writeLog');
+            logger.log(formatLog(req, res, result));
+            console.timeEnd('writeLog');
             temp(result);
         }
         await handler(req, res);
     }
 }
-
 
 module.exports = withLogging;

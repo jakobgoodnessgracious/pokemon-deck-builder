@@ -144,6 +144,16 @@ INSERT INTO player_cards (player_email, card_id)
 	VALUES ('gooserjg@hotmail.com', 'swshp-SWSH223');
 INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
 	VALUES (1, 'swshp-SWSH223', true);
+	
+-- venusaur v
+INSERT INTO card (id, name, supertype, rarity, image_small_url)
+	VALUES ('swshp-SWSH100', 'Venusaur V', 'Pokémon', 'Promo', 'https://images.pokemontcg.io/swshp/SWSH100.png');
+INSERT INTO card_attributes (card_id, attribute, value, data_type)
+	VALUES ('swshp-SWSH100', 'type', 'Grass', 'string'), ('swshp-SWSH100', 'subtype', 'Basic', 'string'), ('swshp-SWSH100', 'subtype', 'V', 'string');
+INSERT INTO player_cards (player_email, card_id)
+	VALUES ('gooserjg@hotmail.com', 'swshp-SWSH100');
+INSERT INTO decks_cards (deck_id, card_id, is_card_pokemon)
+	VALUES (1, 'swshp-SWSH100', true);
 
 -- apis
 -- just a random get all cards query prob remove idk

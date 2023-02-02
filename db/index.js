@@ -16,7 +16,8 @@ module.exports = {
         const res = await pool.query(text, params)
         const duration = Date.now() - start
         console.log('executed query', { text, duration, rows: res.rowCount })
-        console.writeLog('executed query', { text, duration, rows: res.rowCount })
+        // use logger
+        // console.writeLog('executed query', { text, duration, rows: res.rowCount })
         return res
     },
 
