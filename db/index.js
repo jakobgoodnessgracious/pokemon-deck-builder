@@ -1,5 +1,6 @@
 // sourced from https://node-postgres.com/guides/project-structure
 const { Pool } = require('pg');
+const logger = require('../pages/api/utils/logger');
 
 const pool = new Pool({
     user: 'postgres',
@@ -15,7 +16,7 @@ module.exports = {
         const start = Date.now()
         const res = await pool.query(text, params)
         const duration = Date.now() - start
-        console.log('executed query', { text, duration, rows: res.rowCount })
+        logger.debug('executed query', JSON.stringify({ text, duration, rows: res.rowCount }))
         // use logger
         // console.writeLog('executed query', { text, duration, rows: res.rowCount })
         return res
