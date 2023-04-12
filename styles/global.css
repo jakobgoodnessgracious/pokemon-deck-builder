@@ -18,6 +18,24 @@
   width: 44.6%;
 }
 
+.w-55-4 {
+  width: 55.4%;
+}
+
 .w-89-2 {
   width: 89.2%;
+}
+
+.half-a-border-on-top {
+  border-top: 2px solid;
+  border-image: linear-gradient(to right, transparent 50%, #ffffff 50%) 20% 1;
+}
+
+.half-a-border-on-bottom {
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right, transparent 50%, #ffffff 50%) 20% 1;
+}
+
+.br-2-white {
+  border-right: 2px solid #ffffff;
 }

@@ -69,38 +69,70 @@ export default function Home({ allPostsData }) {
     //   }
 
     // </Layout >
-    <div id="app" style={{ height: '100vh', width: '100vw' }} class="d-flex">
-      <div class="container-fluid">f</div>
-      <div class="position-relative h-100 w-89-2">
-        <Image
-          class="object-fit-cover"
-          src="/images/the_pokeball_of_ivysaur_by_wazzy88_d4uhk4w.jpg"
-          fill
-        />
+    <div id="app" style={{ height: '100vh', width: '100vw' }}>
+      <div class="row g-0">
+        <div class="col-6">
+          <div class="row ps-2 pe-2 fs-3">
+            <div class="col-2">
+              <div class="d-flex">
+                <div class="text-white px-3 half-a-border-on-top half-a-border-on-bottom br-2-white">
+                  Home
+                </div>
+              </div>
+            </div>
+
+            <div class="col-2">
+              <div class="nav text-white pt-1 px-5">Collection</div>
+            </div>
+
+            <div class="col-2">
+              <div class="nav text-white pt-1 px-5">Decks</div>
+            </div>
+
+            <div class="col-2">
+              <div class="nav text-white pt-1 px-5">Stats</div>
+            </div>
+
+            <div class="col-2">
+              <div class="nav text-white pt-1 px-5">Api</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6" style={{ height: '100vh' }}>
+          <div class="col-11 offset-1" style={{ height: '100vh' }}>
+            <div class="position-relative h-100 w-100">
+              <Image
+                class="object-fit-cover"
+                src="/images/the_pokeball_of_ivysaur_by_wazzy88_d4uhk4w.jpg"
+                fill
+              />
+            </div>
+          </div>
+        </div>
+        {error && <div>failed to load</div>}
+        {isLoading && <div>loading...</div>}
+        {!error && !isLoading && (
+          // <div style={{ display: 'flex' }}> {data.map(({ image_small_url, id }) => {
+          //   return <Image
+          //     key={id}
+          //     priority
+          //     src={image_small_url}
+          //     className={utilStyles.cardBorderRadius}
+          //     // height={171} // original
+          //     // width={122.5} // original
+          //     height={205.2} // 40 %
+          //     width={147} // 40 %
+          //     // height={239.4} // 30%
+          //     // width={171.5} // 30%
+          //     placeholder="blur"
+          //     blurDataURL={image_small_url}
+          //     alt=""
+          //   />
+          // })}
+          // </div>
+          <div></div>
+        )}
       </div>
-      {error && <div>failed to load</div>}
-      {isLoading && <div>loading...</div>}
-      {!error && !isLoading && (
-        // <div style={{ display: 'flex' }}> {data.map(({ image_small_url, id }) => {
-        //   return <Image
-        //     key={id}
-        //     priority
-        //     src={image_small_url}
-        //     className={utilStyles.cardBorderRadius}
-        //     // height={171} // original
-        //     // width={122.5} // original
-        //     height={205.2} // 40 %
-        //     width={147} // 40 %
-        //     // height={239.4} // 30%
-        //     // width={171.5} // 30%
-        //     placeholder="blur"
-        //     blurDataURL={image_small_url}
-        //     alt=""
-        //   />
-        // })}
-        // </div>
-        <div></div>
-      )}
     </div>
   );
 }
