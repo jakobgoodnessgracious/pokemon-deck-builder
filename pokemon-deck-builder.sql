@@ -65,17 +65,17 @@ COMMENT ON COLUMN "card"."rarity" IS 'Promo, Rare, Rare Ultra, Uncommon, etc.';
 COMMENT ON COLUMN "decks_cards"."count" IS 'if is_pokemon ensure no more than 4 are inserted';
 COMMENT ON COLUMN "card_attributes"."attribute" IS 'E.G. Type,Subtype, etc.';
 COMMENT ON COLUMN "card_attributes"."value" IS 'E.G. Water, Fire, Lightning, or Basic, V, V-MAX, etc., and more...';
-COMMENT ON TABLE player_cards IS 'Essentially this is the (card) collection table'
+COMMENT ON TABLE player_cards IS 'Essentially this is the (card) collection table';
 
 -- reset
-DROP TABLE decks_cards;
-DROP TABLE deck;
-DROP TABLE player_cards;
-DROP TABLE player;
-DROP TABLE card_attributes;
-DROP TABLE card;
-DROP TYPE card_attribute;
-DROP TYPE js_data_type;
+-- DROP TABLE decks_cards;
+-- DROP TABLE deck;
+-- DROP TABLE player_cards;
+-- DROP TABLE player;
+-- DROP TABLE card_attributes;
+-- DROP TABLE card;
+-- DROP TYPE card_attribute;
+-- DROP TYPE js_data_type;
 
 
 

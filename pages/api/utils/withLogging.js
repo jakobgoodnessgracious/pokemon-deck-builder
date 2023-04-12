@@ -8,6 +8,7 @@ const formatLog = (req, res, result) => {
 }
 
 const withLogging = (handler) => {
+    handler = handler.handle();
     return async (req, res) => {
         const temp = res.send;
         res.send = (result) => {
