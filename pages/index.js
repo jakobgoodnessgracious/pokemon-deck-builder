@@ -4,7 +4,7 @@ import utilStyles from '../styles/utils.module.css';
 import { getSortedPostsData } from '../lib/posts';
 import Link from 'next/link';
 import Date from '../components/date';
-import useSWR from 'swr'
+import useSWR from 'swr';
 import Image from 'next/image';
 
 export async function getStaticProps() {
@@ -17,9 +17,9 @@ export async function getStaticProps() {
 }
 
 export default function Home({ allPostsData }) {
-  const fetcher = (...args) => fetch(...args).then(res => res.json())
+  const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-  const { data, error, isLoading } = useSWR('/api/card', fetcher)
+  const { data, error, isLoading } = useSWR('/api/card', fetcher);
 
   // if (error) return <div>failed to load</div>
   // if (isLoading) return <div>loading...</div>
@@ -43,31 +43,64 @@ export default function Home({ allPostsData }) {
     //     </ul>
     //   </section>
     // </Layout>
-    <Layout home>
+    // <Layout home>
+    //   {error && <div>failed to load</div>}
+    //   {isLoading && <div>loading...</div>}
+    //   {!error && !isLoading &&
+    //     // <div style={{ display: 'flex' }}> {data.map(({ image_small_url, id }) => {
+    //     //   return <Image
+    //     //     key={id}
+    //     //     priority
+    //     //     src={image_small_url}
+    //     //     className={utilStyles.cardBorderRadius}
+    //     //     // height={171} // original
+    //     //     // width={122.5} // original
+    //     //     height={205.2} // 40 %
+    //     //     width={147} // 40 %
+    //     //     // height={239.4} // 30%
+    //     //     // width={171.5} // 30%
+    //     //     placeholder="blur"
+    //     //     blurDataURL={image_small_url}
+    //     //     alt=""
+    //     //   />
+    //     // })}
+    //     // </div>
+    //       <div>fucksake</div>
+    //   }
+
+    // </Layout >
+    <div id="app" style={{ height: '100vh', width: '100vw' }} class="d-flex">
+      <div class="container-fluid">f</div>
+      <div class="position-relative h-100 w-89-2">
+        <Image
+          class="object-fit-cover"
+          src="/images/the_pokeball_of_ivysaur_by_wazzy88_d4uhk4w.jpg"
+          fill
+        />
+      </div>
       {error && <div>failed to load</div>}
       {isLoading && <div>loading...</div>}
-      {!error && !isLoading &&
-        <div style={{ display: 'flex' }}> {data.map(({ image_small_url, id }) => {
-          return <Image
-            key={id}
-            priority
-            src={image_small_url}
-            className={utilStyles.cardBorderRadius}
-            // height={171} // original
-            // width={122.5} // original
-            height={205.2} // 40 %
-            width={147} // 40 %
-            // height={239.4} // 30%
-            // width={171.5} // 30%
-            placeholder="blur"
-            blurDataURL={image_small_url}
-            alt=""
-          />
-        })}
-        </div>
-      }
-
-
-    </Layout >
+      {!error && !isLoading && (
+        // <div style={{ display: 'flex' }}> {data.map(({ image_small_url, id }) => {
+        //   return <Image
+        //     key={id}
+        //     priority
+        //     src={image_small_url}
+        //     className={utilStyles.cardBorderRadius}
+        //     // height={171} // original
+        //     // width={122.5} // original
+        //     height={205.2} // 40 %
+        //     width={147} // 40 %
+        //     // height={239.4} // 30%
+        //     // width={171.5} // 30%
+        //     placeholder="blur"
+        //     blurDataURL={image_small_url}
+        //     alt=""
+        //   />
+        // })}
+        // </div>
+        <div></div>
+      )}
+    </div>
   );
 }

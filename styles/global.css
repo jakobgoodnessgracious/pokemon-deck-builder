@@ -1,27 +1,23 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
-    Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  line-height: 1.6;
-  font-size: 18px;
+#app {
+  background: linear-gradient(177.21deg, #4e4e4e -15.72%, #0c0c0c 14.41%);
 }
 
-* {
-  box-sizing: border-box;
+.w-30 {
+  width: 30%;
 }
 
-a {
-  color: #0070f3;
-  text-decoration: none;
+.w-30 {
+  width: 30%;
 }
 
-a:hover {
-  text-decoration: underline;
+.w-30 {
+  width: 30%;
 }
 
-img {
-  max-width: 100%;
-  display: block;
+.w-44-6 {
+  width: 44.6%;
+}
+
+.w-89-2 {
+  width: 89.2%;
 }
