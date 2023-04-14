@@ -1,31 +1,47 @@
 import { useState } from 'react';
-import ConditionalWrapper from '../ConditionalWrapper';
 // import './Nav.scss';
 import styles from './Nav.module.scss';
+import { cls } from '../../pages/utils';
 
 const Nav = ({
-  containerClassName,
-  colClassName,
+  navContainerClassName,
+  tabContainerClassName,
   textClassName,
   activeTextClassName,
-  activeContainerClassName,
+  textContainerClassName,
   defaultActiveTabIndex,
   tabs,
 }) => {
   const [activeTabIndex, setActiveTabIndex] = useState(defaultActiveTabIndex);
 
   return (
-    <div className={containerClassName}>
+    <div className={navContainerClassName}>
       {tabs.map((tab, index) => {
-        const { label } = tab;
+        const {
+          label,
+          activeTextClassName: localActiveTextClassName,
+          tabContainerClassName: localTabContainerClassName,
+          textContainerClassName: localTextContainerClassName,
+        } = tab;
         const isActiveTab = activeTabIndex === index;
         return (
-          <div className={colClassName} key={'nav-col' + index}>
-            <div key={'active-' + index} className={activeContainerClassName}>
+          <div
+            className={localTabContainerClassName || tabContainerClassName}
+            key={'nav-col' + index}
+          >
+            <div
+              key={'active-' + index}
+              className={localTextContainerClassName || textContainerClassName}
+            >
               <div
                 key={index}
                 onClick={() => setActiveTabIndex(index)}
-                className={isActiveTab ? activeTextClassName : textClassName}
+                className={cls(
+                  'cursor-pointer',
+                  isActiveTab
+                    ? localActiveTextClassName || activeTextClassName
+                    : textClassName
+                )}
               >
                 {label}
               </div>
@@ -38,11 +54,15 @@ const Nav = ({
 };
 
 Nav.defaultProps = {
-  containerClassName: 'row lh-1 ps-2 pe-2 fs-4',
-  colClassName: 'col-2',
-  textClassName: 'text-white pb-2 pe-2 ' + styles.inactiveBorder,
-  activeContainerClassName: 'd-flex justify-content-end',
-  activeTextClassName: 'text-white pb-2 pe-2 ' + styles.activeBorder,
+  navContainerClassName: 'd-flex justify-content-between lh-1',
+  tabContainerClassName: '',
+  textClassName: cls('text-white pb-2 pe-2', styles.borderBase),
+  textContainerClassName: 'justify-content-end',
+  activeTextClassName: cls(
+    'text-white pb-2 pe-2',
+    styles.borderBase,
+    styles.activeBorder
+  ),
   defaultActiveTabIndex: 0,
   tabs: [],
 };

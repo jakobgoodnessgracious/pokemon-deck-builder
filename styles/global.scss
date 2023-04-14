@@ -1,0 +1,69 @@
+#app {
+  background: linear-gradient(177.21deg, #4e4e4e -15.72%, #0c0c0c 14.41%);
+}
+
+.w-30 {
+  width: 30%;
+}
+
+.w-30 {
+  width: 30%;
+}
+
+.w-30 {
+  width: 30%;
+}
+
+.w-44-6 {
+  width: 44.6%;
+}
+
+.w-55-4 {
+  width: 55.4%;
+}
+
+.w-89-2 {
+  width: 89.2%;
+}
+
+/* width by % */
+$current-percentage: 0;
+$max-percentage: 100;
+@while $current-percentage <= $max-percentage {
+  .w-#{$current-percentage} {
+    width: $current-percentage + unquote('%') !important;
+  }
+  $current-percentage: $current-percentage + 10;
+}
+/* /width by % */
+
+/* cursor */
+$cursor-props: auto, default, pointer, wait, text, move, help, not-allowed;
+@each $cursor-prop in $cursor-props {
+  .cursor-#{$cursor-prop} {
+    cursor: $cursor-prop !important;
+  }
+}
+/* /cursor */
+
+/* z-index */
+$current-z-index: 0;
+$max-z-index: 10;
+@while $current-z-index <= $max-z-index {
+  .z-#{$current-z-index} {
+    z-index: $current-z-index !important;
+  }
+  $current-z-index: $current-z-index + 1;
+}
+/* /z-index */
+
+/* height by % */
+$current-percentage: 0;
+$max-percentage: 95;
+@while $current-percentage <= $max-percentage {
+  .h-#{$current-percentage} {
+    height: $current-percentage + unquote('%') !important;
+  }
+  $current-percentage: $current-percentage + 5;
+}
+/* /height by % */
