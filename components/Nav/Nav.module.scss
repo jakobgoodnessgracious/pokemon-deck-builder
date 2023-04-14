@@ -1,0 +1,28 @@
+.half-a-border-on-top {
+  border-top: 2px solid;
+  border-image: linear-gradient(to right, transparent 50%, #ffffff 50%) 20% 1;
+}
+
+.half-a-border-on-bottom {
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right, transparent 50%, #ffffff 50%) 20% 1;
+}
+
+.br-2-white {
+  border-right: 2px solid #ffffff;
+}
+
+.activeBorder {
+  border-right: 2px solid #ffffff;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right, transparent 50%, #ffffff 50%) 20% 1;
+}
+
+.inactiveBorder {
+  border-right: 2px solid transparent;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right, transparent 50%, transparent 50%) 20%
+    1;
+}
